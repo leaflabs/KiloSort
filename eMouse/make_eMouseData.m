@@ -5,7 +5,7 @@ function make_eMouseData(fpath, useGPU)
 % you can play with the parameters just below here to achieve a signal more similar to your own data!!! 
 mu_mean   = 15; % mean of mean spike amplitudes. 15 should contain enough clustering errors to be instructive (in Phy). 20 is good quality data, 10 will miss half the neurons, 
 nn        = 30; % number of simulated neurons (30)
-t_record  = 1000; % duration in seconds of simulation. longer is better (and slower!) (1000)
+t_record  = 100; % duration in seconds of simulation. longer is better (and slower!) (1000)
 fr_bounds = [1 10]; % min and max of firing rates ([1 10])
 tsmooth   = 3; % gaussian smooth the noise with sig = this many samples (increase to make it harder) (3)
 chsmooth  = 1; % smooth the noise across channels too, with this sig (increase to make it harder) (1)

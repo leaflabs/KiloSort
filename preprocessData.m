@@ -7,6 +7,9 @@ ops.nt0 	= getOr(ops, {'nt0'}, 61);
 if strcmp(ops.datatype , 'openEphys')
    ops = convertOpenEphysToRawBInary(ops);  % convert data, only for OpenEphys
 end
+if strcmp(ops.datatype, 'h5')
+  ops = convertWillowToRawBInary(ops);      % convert willow data
+end
 
 if ~isempty(ops.chanMap)
     if ischar(ops.chanMap)
@@ -21,7 +24,7 @@ if ~isempty(ops.chanMap)
             yc = [1:1:numel(chanMapConn)]';
         end
         ops.Nchan    = getOr(ops, 'Nchan', sum(connected>1e-6));
-        ops.NchanTOT = getOr(ops, 'NchanTOT', numel(connected));
+        ops.NchanTOT = getOr(ops, 'NchanTOT', 1024);
         if exist('fs', 'var')
             ops.fs       = getOr(ops, 'fs', fs);
         end
@@ -33,7 +36,8 @@ if ~isempty(ops.chanMap)
         connected = true(numel(chanMap), 1);      
         
         ops.Nchan    = numel(connected);
-        ops.NchanTOT = numel(connected);
+        sprintf('rez.ops.Nchan: %i', ops.Nchan);
+        ops.NchanTOT  = 1024;
     end
 else
     chanMap  = 1:ops.Nchan;
@@ -44,7 +48,7 @@ else
     yc = [1:1:numel(chanMapConn)]';
 end
 if exist('kcoords', 'var')
-    kcoords = kcoords(connected);
+    kcoords = kcoords(find(connected==1));
 else
     kcoords = ones(ops.Nchan, 1);
 end
@@ -89,6 +93,7 @@ fprintf('Time %3.0fs. Loading raw data... \n', toc);
 fid = fopen(ops.fbinary, 'r');
 ibatch = 0;
 Nchan = rez.ops.Nchan;
+NchanTOT = rez.ops.NchanTOT;
 if ops.GPU
     CC = gpuArray.zeros( Nchan,  Nchan, 'single');
 else
@@ -134,7 +139,7 @@ while 1
     end
     dataRAW = dataRAW';
     dataRAW = single(dataRAW);
-    dataRAW = dataRAW(:, chanMapConn);
+    dataRAW = dataRAW(:, chanMapConn+1);
     
     datr = filter(b1, a1, dataRAW);
     datr = flipud(datr);

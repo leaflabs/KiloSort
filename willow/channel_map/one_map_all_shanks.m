@@ -2,6 +2,14 @@ function one_map_all_shanks (probe_map_file, impedance_file, outpath)
 %  create a channel map file
 
 num_comments = count_comments(probe_map_file)
+% 1st column = channel number (0-based)
+CHANNEL_COL = 1;
+% 2nd column = shank number (0-based)
+SHANK_COL = 2;
+% 3rd column = row number (0-based)
+ROW_COL = 3;
+% 4th column = column number (0-based)
+COL_COL = 4;
 probe_map = dlmread(probe_map_file,'',num_comments,0);
 fs = 30000;
 
@@ -10,16 +18,17 @@ chanMap = []; chanMap0ind = [];
 connected = [];
 xcoords = []; ycoords = []; kcoords = [];
 
-for shank = 0:max(probe_map(:,2))
-    index = find(probe_map(:,2)==shank);
+for shank = 0:max(probe_map(:,SHANK_COL))
+    index = find(probe_map(:,SHANK_COL)==shank);
     if isempty(index)
         disp(sprintf('Shank %d not found', shank));
         exit;
     else
-        chanMap = [chanMap; probe_map(index,1)];
-        connected = [connected; get_good_channels(index, probe_map, impedance_file)];
-        ycoords = [ycoords; probe_map(index,3)];   % rows
-        xcoords = [xcoords; probe_map(index,4)];   % columns
+        chanMap = [chanMap; probe_map(index,CHANNEL_COL)];
+        %connected = [connected; get_good_channels(index, probe_map, impedance_file)];
+        connected = [connected; get_good_channels(probe_map(index), impedance_file)];
+        ycoords = [ycoords; probe_map(index,ROW_COL)];   % rows
+        xcoords = [xcoords; probe_map(index,COL_COL)];   % columns
         kcoords = [kcoords; (shank+1)*ones(length(index),1)];
     end
 end
@@ -49,7 +58,8 @@ save(fullfile(outpath, sprintf('chanMap_allshanks.mat')), ...
 % a single channel group.
 end
 
-function connected = get_good_channels (index, probe_map, impedance_file)
+%function connected = get_good_channels (index, probe_map, impedance_file)
+function connected = get_good_channels (index, impedance_file)
     % find dead channels using impedance data
     D = h5read(impedance_file,'/impedanceMeasurements');
     my_z = D(index+1);

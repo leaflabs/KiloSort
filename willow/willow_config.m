@@ -1,10 +1,10 @@
 ops.GPU                 = 1; % whether to run this code on an Nvidia GPU (much faster, mexGPUall first)		
-ops.parfor              = 1; % whether to use parfor to accelerate some parts of the algorithm		
+ops.parfor              = 0; % whether to use parfor to accelerate some parts of the algorithm		
 ops.verbose             = 1; % whether to print command line progress		
 ops.showfigures         = 1; % whether to plot figures during optimization		
 		
 ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'		
-ops.fbinary             = '/home/jkinney/Desktop/60secs_automerge/awake_gratings_and_grass_offset_133200014_count_1800000.h5'; % will be created for converted willow data 		
+ops.fbinary             = '/home/jkinney/Desktop/60secs_automerge/awake_gratings_and_grass_offset_133200014_count_1800000.dat'; % will be created for converted willow data 		
 ops.fproc               = '/home/jkinney/Desktop/60secs_automerge/temp_wh.dat'; % residual from RAM of preprocessed data		
 ops.root                = '/home/jkinney/Desktop/60secs_automerge/'; % 'openEphys' only: where raw files are		
 ops.original            = 'awake_gratings_and_grass_offset_133200014_count_1800000.h5'
@@ -23,7 +23,8 @@ ops.nSkipCov            = 1; % compute whitening matrix from every N-th batch (1
 ops.whiteningRange      = 32; % how many channels to whiten together (Inf for whole probe whitening, should be fine if Nchan<=32)		
 		
 % define the channel map as a filename (string) or simply an array		
-ops.chanMap             = '/home/jkinney/Desktop/kilosort_1K_neural_data/channel_map/chanMap_shankd0.mat'; % make this file using createChannelMapFile.m		
+ops.chanMap             = '/home/jkinney/src/KiloSort/willow/channel_map/chanMap_shank0.mat'; % make this file using createChannelMapFile.m		
+%ops.chanMap             = '/home/jkinney/Desktop/kilosort_1K_neural_data/channel_map/chanMap_shankd0.mat'; % make this file using createChannelMapFile.m		
 ops.criterionNoiseChannels = 0.2; % fraction of "noise" templates allowed to span all channel groups (see createChannelMapFile for more info). 		
 % ops.chanMap = 1:ops.Nchan; % treated as linear probe if a chanMap file		
 		
@@ -32,7 +33,7 @@ ops.Nrank               = 3;    % matrix rank of spike template model (3)
 ops.nfullpasses         = 6;    % number of complete passes through data during optimization (6)		
 ops.maxFR               = 20000;  % maximum number of spikes to extract per batch (20000)		
 ops.fshigh              = 300;   % frequency for high pass filtering		
-%ops.fslow               = 2000;   % frequency for low pass filtering (optional)
+ops.fslow               = 9500;   % frequency for low pass filtering (optional)
 ops.ntbuff              = 64;    % samples of symmetrical buffer for whitening and spike detection		
 % TODO what to do here
 ops.scaleproc           = 200;   % int16 scaling of whitened data		

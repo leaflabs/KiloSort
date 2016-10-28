@@ -31,5 +31,5 @@ save(fullfile(ops.root,  'rez.mat'), 'rez', '-v7.3');
 rezToPhy(rez, ops.root);
 
 % remove temporary file
-delete(ops.fproc);
+%delete(ops.fproc);
 %%

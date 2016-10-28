@@ -22,9 +22,12 @@ if ~isempty(ops.chanMap)
             chanMapConn = 1+chanNums(connected>1e-6);
             xc = zeros(numel(chanMapConn), 1);
             yc = [1:1:numel(chanMapConn)]';
+            disp('WTF1!');
+            exit
         end
         ops.Nchan    = getOr(ops, 'Nchan', sum(connected>1e-6));
         ops.NchanTOT = getOr(ops, 'NchanTOT', 1024);
+        %% JPK: fs is loaded from MAT file
         if exist('fs', 'var')
             ops.fs       = getOr(ops, 'fs', fs);
         end
@@ -38,6 +41,8 @@ if ~isempty(ops.chanMap)
         ops.Nchan    = numel(connected);
         sprintf('rez.ops.Nchan: %i', ops.Nchan);
         ops.NchanTOT  = 1024;
+        disp('WTF2!');
+        exit
     end
 else
     chanMap  = 1:ops.Nchan;
@@ -46,8 +51,11 @@ else
     chanMapConn = 1:ops.Nchan;    
     xc = zeros(numel(chanMapConn), 1);
     yc = [1:1:numel(chanMapConn)]';
+    disp('WTF3!');
+    exit
 end
 if exist('kcoords', 'var')
+    % JPK: This should do nothing.
     kcoords = kcoords(find(connected==1));
 else
     kcoords = ones(ops.Nchan, 1);
@@ -83,6 +91,8 @@ Nbatch_buff = floor(4/5 * nint16s/rez.ops.Nchan /(NT-ops.ntbuff)); % factor of 4
 Nbatch_buff = min(Nbatch_buff, Nbatch);
 
 %% load data into patches, filter, compute covariance
+
+% compute filter weights
 if isfield(ops,'fslow')&&ops.fslow<ops.fs/2
     [b1, a1] = butter(3, [ops.fshigh/ops.fs,ops.fslow/ops.fs]*2, 'bandpass');
 else
@@ -90,7 +100,10 @@ else
 end
 
 fprintf('Time %3.0fs. Loading raw data... \n', toc);
+
+% open input data file
 fid = fopen(ops.fbinary, 'r');
+
 ibatch = 0;
 Nchan = rez.ops.Nchan;
 NchanTOT = rez.ops.NchanTOT;
@@ -99,13 +112,13 @@ if ops.GPU
 else
     CC = zeros( Nchan,  Nchan, 'single');
 end
-if strcmp(ops.whitening, 'noSpikes')
-    if ops.GPU
-        nPairs = gpuArray.zeros( Nchan,  Nchan, 'single');
-    else
-        nPairs = zeros( Nchan,  Nchan, 'single');
-    end
-end
+%if strcmp(ops.whitening, 'noSpikes')
+%    if ops.GPU
+%        nPairs = gpuArray.zeros( Nchan,  Nchan, 'single');
+%    else
+%        nPairs = zeros( Nchan,  Nchan, 'single');
+%    end
+%end
 if ~exist('DATA', 'var')
     DATA = zeros(NT, rez.ops.Nchan, Nbatch_buff, 'int16');
 end
@@ -114,6 +127,7 @@ isproc = zeros(Nbatch, 1);
 while 1
     ibatch = ibatch + ops.nSkipCov;
     
+    % jump to correct place in input data file
     offset = max(0, 2*NchanTOT*((NT - ops.ntbuff) * (ibatch-1) - 2*ops.ntbuff));
     if ibatch==1
         ioffset = 0;
@@ -121,24 +135,43 @@ while 1
         ioffset = ops.ntbuff;
     end
     fseek(fid, offset, 'bof');
+
+    % read from input data file in column order
+    % data read is interpreted as int16 and saved as int16
+    % HOW MUCH IS READ?
+    % NchanTOT = 1024
+    % NTbuff = (32*1024 + 64) + 4*64 = 33088 (if samples, then 1 second of data)
     buff = fread(fid, [NchanTOT NTbuff], '*int16');
+    %% JPK: plot some data to make sure that it looks good
+
+    %keyboard
     
-    %         keyboard;
-    
+    % if no more data, then exit while loop
     if isempty(buff)
         break;
     end
+
+    % if remaining data is less than buffer, then fill buffer with copies of last sample
     nsampcurr = size(buff,2);
     if nsampcurr<NTbuff
         buff(:, nsampcurr+1:NTbuff) = repmat(buff(:,nsampcurr), 1, NTbuff-nsampcurr);
     end
+
+    % save data to gpu or cpu (variable)
     if ops.GPU
         dataRAW = gpuArray(buff);
     else
         dataRAW = buff;
     end
+
+    % transpose data
+    % assumes...
+    % was rows = channels, columns = time
+    % now rows = time, columns = channels
     dataRAW = dataRAW';
+    % convert to single precision
     dataRAW = single(dataRAW);
+    % only keep subset of channels (columns)
     dataRAW = dataRAW(:, chanMapConn+1);
     
     datr = filter(b1, a1, dataRAW);
@@ -165,10 +198,10 @@ while 1
     end
 end
 CC = CC / ceil((Nbatch-1)/ops.nSkipCov);
-switch ops.whitening
-    case 'noSpikes'
-        nPairs = nPairs/ibatch;
-end
+%switch ops.whitening
+%    case 'noSpikes'
+%        nPairs = nPairs/ibatch;
+%end
 fclose(fid);
 fprintf('Time %3.0fs. Channel-whitening filters computed. \n', toc);
 switch ops.whitening
@@ -280,9 +313,14 @@ for ibatch = 1:Nbatch
     else
         datcpu  = gather_try(int16(datr));
         fwrite(fidW, datcpu, 'int16');
+        fprintf('Wrote whitened data to temporary file...');
     end
     
 end
+
+datcpu  = gather_try(int16(datr));
+fwrite(fidW, datcpu, 'int16');
+fprintf('Wrote whitened data to temporary file...');
 
 if strcmp(ops.initialize, 'fromData')
    uproj(i0+1:end, :) = []; 

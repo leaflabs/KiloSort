@@ -23,7 +23,6 @@ peaks = single(S1<smin+1e-3 & S1<Th);
 %     keyboard
 % end
 
-
 sum_peaks = my_sum(peaks, long_range, [1 2]);
 peaks = peaks .* (sum_peaks<1.2).* S1;
 

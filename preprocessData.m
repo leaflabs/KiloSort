@@ -173,6 +173,12 @@ while 1
     dataRAW = single(dataRAW);
     % only keep subset of channels (columns)
     dataRAW = dataRAW(:, chanMapConn+1);
+
+    % JPK: normalize data so standard deviation==1
+    % since signals are strongly non-gaussian,
+    % use formula for std dev based on median
+    %ops.scaleproc = mean(median(abs(dataRAW)))/0.6745;
+    %keyboard
     
     datr = filter(b1, a1, dataRAW);
     datr = flipud(datr);
@@ -190,7 +196,7 @@ while 1
             nPairs    = nPairs + (blankout'*blankout)/NT;
         otherwise
             CC        = CC + (datr' * datr)/NT;
-            disp('This ran1.');
+            %disp('This ran1.');
     end
     
     if ibatch<=Nbatch_buff
@@ -208,7 +214,7 @@ fprintf('Time %3.0fs. Channel-whitening filters computed. \n', toc);
 switch ops.whitening
     case 'diag'
         CC = diag(diag(CC));
-        disp('This ran2.');
+        %disp('This ran2.');
     case 'noSpikes'
         CC = CC ./nPairs;
 end
@@ -232,8 +238,8 @@ Wrot    = ops.scaleproc * Wrot;
 
 fprintf('Time %3.0fs. Loading raw data and applying filters... \n', toc);
 
-fid         = fopen(ops.fbinary, 'r');
-fidW    = fopen(ops.fproc, 'w');
+fid  = fopen(ops.fbinary, 'r');
+fidW = fopen(ops.fproc, 'w');
 
 if strcmp(ops.initialize, 'fromData')
     i0  = 0;
@@ -246,7 +252,7 @@ end
 %
 for ibatch = 1:Nbatch
     if isproc(ibatch) %ibatch<=Nbatch_buff
-        disp('This ran2.');
+        %disp('This ran2.');
         if ops.GPU
             datr = single(gpuArray(DATA(:,:,ibatch)));
         else
@@ -277,6 +283,7 @@ for ibatch = 1:Nbatch
         end
         dataRAW = dataRAW';
         dataRAW = single(dataRAW);
+        % TODO why do we not need chanMapConn+1 here like we did before?
         dataRAW = dataRAW(:, chanMapConn);
         
         datr = filter(b1, a1, dataRAW);
@@ -301,7 +308,7 @@ for ibatch = 1:Nbatch
     dataRAW = single(dataRAW);
     % TODO eliminate ops.scaleproc
     dataRAW = dataRAW / ops.scaleproc;
-    
+
     if strcmp(ops.initialize, 'fromData') %&& rem(ibatch, 10)==1
         % find isolated spikes
         [row, col, mu] = isolated_peaks(dataRAW, ops.loc_range, ops.long_range, ops.spkTh);

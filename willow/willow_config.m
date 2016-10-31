@@ -36,7 +36,7 @@ ops.fshigh              = 100;   % frequency for high pass filtering
 ops.fslow               = 9500;   % frequency for low pass filtering (optional)
 ops.ntbuff              = 64;    % samples of symmetrical buffer for whitening and spike detection		
 % TODO what to do here
-ops.scaleproc           = 100;   % int16 scaling of whitened data	(200)
+ops.scaleproc           = 460.0873;   % int16 scaling of whitened data	(200)
 ops.NT                  = 32*1024 + ops.ntbuff;% this is the batch size (try decreasing if out of memory) 		
 % for GPU should be multiple of 32 + ntbuff		
 		

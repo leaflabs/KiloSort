@@ -186,6 +186,7 @@ while (i<=Nbatch * ops.nfullpasses+1)
         dataRAW = dat;
     end
     dataRAW = single(dataRAW);
+    % TODO figure out if we need scaleproc here
     dataRAW = dataRAW / ops.scaleproc;
     
     % project data in low-dim space

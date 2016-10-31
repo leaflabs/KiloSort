@@ -23,7 +23,7 @@ if ~isempty(ops.chanMap)
             xc = zeros(numel(chanMapConn), 1);
             yc = [1:1:numel(chanMapConn)]';
             disp('WTF1!');
-            exit
+            keyboard
         end
         ops.Nchan    = getOr(ops, 'Nchan', sum(connected>1e-6));
         ops.NchanTOT = getOr(ops, 'NchanTOT', 1024);
@@ -42,7 +42,7 @@ if ~isempty(ops.chanMap)
         sprintf('rez.ops.Nchan: %i', ops.Nchan);
         ops.NchanTOT  = 1024;
         disp('WTF2!');
-        exit
+        keyboard
     end
 else
     chanMap  = 1:ops.Nchan;
@@ -52,7 +52,7 @@ else
     xc = zeros(numel(chanMapConn), 1);
     yc = [1:1:numel(chanMapConn)]';
     disp('WTF3!');
-    exit
+    keyboard
 end
 if exist('kcoords', 'var')
     % JPK: This should do nothing.
@@ -178,7 +178,7 @@ while 1
     datr = flipud(datr);
     datr = filter(b1, a1, datr);
     datr = flipud(datr);
-    
+    %keyboard
     switch ops.whitening
         case 'noSpikes'
             smin      = my_min(datr, ops.loc_range, [1 2]);
@@ -190,6 +190,7 @@ while 1
             nPairs    = nPairs + (blankout'*blankout)/NT;
         otherwise
             CC        = CC + (datr' * datr)/NT;
+            disp('This ran1.');
     end
     
     if ibatch<=Nbatch_buff
@@ -207,6 +208,7 @@ fprintf('Time %3.0fs. Channel-whitening filters computed. \n', toc);
 switch ops.whitening
     case 'diag'
         CC = diag(diag(CC));
+        disp('This ran2.');
     case 'noSpikes'
         CC = CC ./nPairs;
 end
@@ -220,8 +222,13 @@ else
     D = diag(D);
     eps 	= 1e-6;
     Wrot 	= E * diag(1./(D + eps).^.5) * E';
+    disp('WTF!')
+    keyboard
 end
 Wrot    = ops.scaleproc * Wrot;
+
+%keyboard
+
 
 fprintf('Time %3.0fs. Loading raw data and applying filters... \n', toc);
 
@@ -239,6 +246,7 @@ end
 %
 for ibatch = 1:Nbatch
     if isproc(ibatch) %ibatch<=Nbatch_buff
+        disp('This ran2.');
         if ops.GPU
             datr = single(gpuArray(DATA(:,:,ibatch)));
         else
@@ -279,7 +287,10 @@ for ibatch = 1:Nbatch
         datr = datr(ioffset + (1:NT),:);
     end
     
+    %foo    = datr * Wrot;
     datr    = datr * Wrot;
+    
+    %keyboard
     
     if ops.GPU
         dataRAW = gpuArray(datr);
@@ -288,6 +299,7 @@ for ibatch = 1:Nbatch
     end
     %         dataRAW = datr;
     dataRAW = single(dataRAW);
+    % TODO eliminate ops.scaleproc
     dataRAW = dataRAW / ops.scaleproc;
     
     if strcmp(ops.initialize, 'fromData') %&& rem(ibatch, 10)==1

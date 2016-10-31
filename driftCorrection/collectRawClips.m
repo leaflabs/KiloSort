@@ -158,6 +158,7 @@ else
     eps 	= 1e-6;
     Wrot 	= E * diag(1./(D + eps).^.5) * E';
 end
+% TODO do we need scaleproc here
 Wrot    = ops.scaleproc * Wrot;
 
 fprintf('Time %3.0fs. Loading raw data and applying filters... \n', toc);

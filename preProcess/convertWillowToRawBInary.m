@@ -8,7 +8,7 @@ D = int16((single(D) - 2^15));
 M = 1024;
 N = length(D)/M;
 data=reshape(D,M,N);
-%keyboard
+%idata=reshape(iD,M,N);
 fwrite(fidout, data, 'int16');
 fclose(fidout);
 toc

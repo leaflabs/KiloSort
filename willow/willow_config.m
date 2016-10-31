@@ -1,4 +1,4 @@
-ops.GPU                 = 1; % whether to run this code on an Nvidia GPU (much faster, mexGPUall first)		
+ops.GPU                 = 0; % whether to run this code on an Nvidia GPU (much faster, mexGPUall first)		
 ops.parfor              = 0; % whether to use parfor to accelerate some parts of the algorithm		
 ops.verbose             = 1; % whether to print command line progress		
 ops.showfigures         = 1; % whether to plot figures during optimization		
@@ -32,11 +32,11 @@ ops.criterionNoiseChannels = 0.2; % fraction of "noise" templates allowed to spa
 ops.Nrank               = 3;    % matrix rank of spike template model (3)		
 ops.nfullpasses         = 6;    % number of complete passes through data during optimization (6)		
 ops.maxFR               = 20000;  % maximum number of spikes to extract per batch (20000)		
-ops.fshigh              = 300;   % frequency for high pass filtering		
+ops.fshigh              = 100;   % frequency for high pass filtering		
 ops.fslow               = 9500;   % frequency for low pass filtering (optional)
 ops.ntbuff              = 64;    % samples of symmetrical buffer for whitening and spike detection		
 % TODO what to do here
-ops.scaleproc           = 200;   % int16 scaling of whitened data		
+ops.scaleproc           = 100;   % int16 scaling of whitened data	(200)
 ops.NT                  = 32*1024 + ops.ntbuff;% this is the batch size (try decreasing if out of memory) 		
 % for GPU should be multiple of 32 + ntbuff		
 		
@@ -59,7 +59,7 @@ ops.splitT           = .1;           % lower threshold for splitting (.1)
 ops.initialize      = 'fromData'; %'fromData' or 'no'		
 ops.spkTh           = -6;      % spike threshold in standard deviations (4)		
 ops.loc_range       = [3  1];  % ranges to detect peaks; plus/minus in time and channel ([3 1])		
-ops.long_range      = [30  6]; % ranges to detect isolated peaks ([30 6])		
+ops.long_range      = [30  12]; % ranges to detect isolated peaks ([30 6])		
 ops.maskMaxChannels = 5;       % how many channels to mask up/down ([5])		
 ops.crit            = .65;     % upper criterion for discarding spike repeates (0.65)		
 ops.nFiltMax        = 10000;   % maximum "unique" spikes to consider (10000)		

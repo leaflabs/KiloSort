@@ -47,6 +47,7 @@ for ibatch = 1:Nbatch
     end
     dataRAW = gpuArray(dat);
     dataRAW = single(dataRAW);
+    % TODO figure out if we need scaleproc here
     dataRAW = dataRAW / ops.scaleproc;
         
     

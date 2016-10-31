@@ -132,6 +132,7 @@ for ibatch = 1:Nbatch
         dataRAW = dat;
     end
     dataRAW = single(dataRAW);
+    % TODO figure out if we need this scaling to happen this way
     dataRAW = dataRAW / ops.scaleproc;
     
     % project data in low-dim space

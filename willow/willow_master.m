@@ -30,7 +30,7 @@ save(fullfile(ops.root,  'rez.mat'), 'rez', '-v7.3');
 % save python results file for Phy
 rezToPhy(rez, ops.root);
 
-keyboard
+%keyboard
 
 % remove temporary file
 %delete(ops.fproc);

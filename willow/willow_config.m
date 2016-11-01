@@ -34,7 +34,7 @@ ops.nfullpasses         = 6;    % number of complete passes through data during 
 ops.maxFR               = 20000;  % maximum number of spikes to extract per batch (20000)		
 ops.fshigh              = 100;   % frequency for high pass filtering		
 ops.fslow               = 9500;   % frequency for low pass filtering (optional)
-ops.ntbuff              = 64;    % samples of symmetrical buffer for whitening and spike detection		
+ops.ntbuff              = 128;    % samples of symmetrical buffer for whitening and spike detection		
 % TODO what to do here
 ops.scaleproc           = 460.0873;   % int16 scaling of whitened data	(200)
 ops.NT                  = 32*1024 + ops.ntbuff;% this is the batch size (try decreasing if out of memory) 		
@@ -57,7 +57,7 @@ ops.splitT           = .1;           % lower threshold for splitting (.1)
 % options for initializing spikes from data		
 %ops.initialize      = 'no'; %'fromData' or 'no'		
 ops.initialize      = 'fromData'; %'fromData' or 'no'		
-ops.spkTh           = -6;      % spike threshold in standard deviations (4)		
+ops.spkTh           = -4;      % spike threshold in standard deviations (4)		
 ops.loc_range       = [3  1];  % ranges to detect peaks; plus/minus in time and channel ([3 1])		
 ops.long_range      = [30  12]; % ranges to detect isolated peaks ([30 6])		
 ops.maskMaxChannels = 5;       % how many channels to mask up/down ([5])		

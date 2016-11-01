@@ -284,7 +284,7 @@ for ibatch = 1:Nbatch
         dataRAW = dataRAW';
         dataRAW = single(dataRAW);
         % TODO why do we not need chanMapConn+1 here like we did before?
-        dataRAW = dataRAW(:, chanMapConn);
+        dataRAW = dataRAW(:, chanMapConn+1);
         
         datr = filter(b1, a1, dataRAW);
         datr = flipud(datr);

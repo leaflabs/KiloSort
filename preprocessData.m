@@ -90,6 +90,19 @@ Nbatch      = ceil(d.bytes/2/NchanTOT /(NT-ops.ntbuff));
 Nbatch_buff = floor(4/5 * nint16s/rez.ops.Nchan /(NT-ops.ntbuff)); % factor of 4/5 for storing PCs of spikes
 Nbatch_buff = min(Nbatch_buff, Nbatch);
 
+%% subtract virtual reference
+% 
+% % open input data file
+% fid = fopen(ops.fbinary, 'r');
+% buff = fread(fid, '*int16');
+% fclose(fid);
+% M = 1024;
+% N = length(buff)/M;
+% data=reshape(buff,M,N);
+% % only keep good channels
+% tmp = data(chanMapConn+1,:);
+% data = single(data)-mean(data(chanMapConn+1,:)); 
+
 %% load data into patches, filter, compute covariance
 
 % compute filter weights
@@ -173,6 +186,8 @@ while 1
     dataRAW = single(dataRAW);
     % only keep subset of channels (columns)
     dataRAW = dataRAW(:, chanMapConn+1);
+    % subtractvirtual reference
+    dataRAW = dataRAW-mean(dataRAW,2); 
 
     % JPK: normalize data so standard deviation==1
     % since signals are strongly non-gaussian,

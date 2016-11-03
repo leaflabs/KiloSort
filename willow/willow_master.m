@@ -16,19 +16,27 @@ end
 if strcmp(ops.datatype , 'h5')
    ops = convertWillowToRawBInary(ops);  % convert willow h5 snapshot data
 end
-%
-[rez, DATA, uproj] = preprocessData(ops); % preprocess data and extract spikes for initialization
-rez                = fitTemplates(rez, DATA, uproj);  % fit templates iteratively
-rez                = fullMPMU(rez, DATA);% extract final spike times (overlapping extraction)
 
-% AutoMerge. rez2Phy will use for clusters the new 5th column of st3 if you run this)
-rez = merge_posthoc2(rez);
-
-% save matlab results file
-save(fullfile(ops.root,  'rez.mat'), 'rez', '-v7.3');
-
-% save python results file for Phy
-rezToPhy(rez, ops.root);
+for shank = 0:4
+    ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/chanMap_shank%d.mat',shank);	
+    ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d',shank); % 'openEphys' only: where raw files are		
+    ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data		
+    %
+    [rez, DATA, uproj] = preprocessData(ops); % preprocess data and extract spikes for initialization
+    rez                = fitTemplates(rez, DATA, uproj);  % fit templates iteratively
+    rez                = fullMPMU(rez, DATA);% extract final spike times (overlapping extraction)
+    
+    % AutoMerge. rez2Phy will use for clusters the new 5th column of st3 if you run this)
+    rez = merge_posthoc2(rez);
+    
+    % save matlab results file
+    save(fullfile(ops.root,  'rez.mat'), 'rez', '-v7.3');
+    
+    % save python results file for Phy
+    rezToPhy(rez, ops.root);
+    keyboard
+    
+end
 
 %keyboard
 

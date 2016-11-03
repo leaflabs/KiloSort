@@ -4,12 +4,12 @@ uproj = [];
 ops.nt0 	= getOr(ops, {'nt0'}, 61);
 
 
-if strcmp(ops.datatype , 'openEphys')
-   ops = convertOpenEphysToRawBInary(ops);  % convert data, only for OpenEphys
-end
-if strcmp(ops.datatype, 'h5')
-  ops = convertWillowToRawBInary(ops);      % convert willow data
-end
+% if strcmp(ops.datatype , 'openEphys')
+%    ops = convertOpenEphysToRawBInary(ops);  % convert data, only for OpenEphys
+% end
+% if strcmp(ops.datatype, 'h5')
+%   ops = convertWillowToRawBInary(ops);      % convert willow data
+% end
 
 if ~isempty(ops.chanMap)
     if ischar(ops.chanMap)
@@ -186,9 +186,18 @@ while 1
     dataRAW = single(dataRAW);
     % only keep subset of channels (columns)
     dataRAW = dataRAW(:, chanMapConn+1);
+    
     % subtractvirtual reference
-    dataRAW = dataRAW-mean(dataRAW,2); 
-
+    %dataRAW1 = dataRAW-mean(dataRAW,2);
+    
+    virtref = mean(dataRAW,2);
+    virtpower = sum(virtref.^2);
+    a = size(dataRAW);
+    for i=1:a(2)
+        overlap = sum(virtref.*dataRAW(:,i))/virtpower;
+        dataRAW(:,i) = dataRAW(:,i)-overlap*virtref;
+    end
+    
     % JPK: normalize data so standard deviation==1
     % since signals are strongly non-gaussian,
     % use formula for std dev based on median

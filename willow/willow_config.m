@@ -1,13 +1,15 @@
-ops.GPU                 = 0; % whether to run this code on an Nvidia GPU (much faster, mexGPUall first)		
+ops.GPU                 = 1; % whether to run this code on an Nvidia GPU (much faster, mexGPUall first)		
 ops.parfor              = 0; % whether to use parfor to accelerate some parts of the algorithm		
 ops.verbose             = 1; % whether to print command line progress		
 ops.showfigures         = 1; % whether to plot figures during optimization		
-		
+
+%mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
+mystr = 'awake_planet_earth_offset_216000000_count_1800000';
 ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'		
-ops.fbinary             = '/home/jkinney/Desktop/60secs_automerge/awake_gratings_and_grass_offset_133200014_count_1800000.dat'; % will be created for converted willow data 		
+ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s.dat',mystr); % will be created for converted willow data 		
 ops.fproc               = '/home/jkinney/Desktop/60secs_automerge/temp_wh.dat'; % residual from RAM of preprocessed data		
 ops.root                = '/home/jkinney/Desktop/60secs_automerge/'; % 'openEphys' only: where raw files are		
-ops.original            = 'awake_gratings_and_grass_offset_133200014_count_1800000.h5'
+ops.original            = sprintf('%s.h5',mystr);
 		
 %ops.fs                  = 25000;        % sampling rate		(omit if already in chanMap file)
 %ops.NchanTOT            = 32;           % total number of channels (omit if already in chanMap file)

@@ -13,6 +13,9 @@ COL_COL = 4;
 probe_map = dlmread(probe_map_file,'',num_comments,0);
 fs = 30000;
 
+% keep every Nth row
+N=3;
+
 % organize channels by shank
 for shank = 0:max(probe_map(:,SHANK_COL))
     index = find(probe_map(:,SHANK_COL)==shank);
@@ -22,7 +25,8 @@ for shank = 0:max(probe_map(:,SHANK_COL))
         exit;
     else
         chanMap = probe_map(index,CHANNEL_COL);
-        connected = get_good_channels(probe_map(index), probe_map, impedance_file);
+        %connected = get_good_channels(probe_map(index), probe_map, impedance_file);
+        connected = get_good_channels_keep_every_n_row (probe_map(index), probe_map, impedance_file, ROW_COL,N);
         ycoords = probe_map(index,ROW_COL); % rows
         xcoords = probe_map(index,COL_COL); % columns
         kcoords = (shank+1)*ones(length(index),1);
@@ -31,6 +35,26 @@ for shank = 0:max(probe_map(:,SHANK_COL))
 end
 
 
+end
+
+function connected = get_good_channels_keep_every_n_row (index, probe_map, impedance_file, ROW_COL, N)
+% find dead channels using impedance data
+D = h5read(impedance_file,'/impedanceMeasurements');
+my_z = D(index+1);
+% Note the following assert will fail
+%    assert(length(D)==length(probe_map));
+% since D has 1024 elements
+% but probe_map has 1020, since probe had only 1020 recording sites.
+% Keep in mind that max index of 1020 is 1024, since it ended up being
+% some middle channel numbers that were skipped.
+MAX_Z = 2e6;
+MIN_Z = 1e5;
+connected = my_z<MAX_Z & my_z>MIN_Z;
+for i=1:length(index)
+    if mod(probe_map(probe_map(:,1)==index(i),ROW_COL),N)~=0
+        connected(i) = 0;
+    end
+end
 end
 
 function connected = get_good_channels (index, probe_map,impedance_file)

@@ -34,7 +34,6 @@ for shank = 0:4
     
     % save python results file for Phy
     rezToPhy(rez, ops.root);
-    keyboard
     
 end
 

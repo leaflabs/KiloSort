@@ -17,7 +17,6 @@ ops.keep_N = 1;
 
 ops.no_write = true;
 
-
 if ops.GPU     
     gpuDevice(1); % initialize GPU (will erase any existing GPU arrays)
 end
@@ -31,7 +30,11 @@ for shank = 0:4
     %     ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d',shank); % 'openEphys' only: where raw files are
     %     ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data
     ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/every_%d_row/chanMap_shank%d.mat',ops.keep_N,shank);
-    ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/GPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+    if ops.GPU==1
+        ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/GPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+    else
+        ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/CPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+    end
     ops.fproc   = sprintf('%s/temp_wh.dat',ops.root); % residual from RAM of preprocessed data
     %
     [rez, DATA, uproj] = preprocessData(ops); % preprocess data and extract spikes for initialization

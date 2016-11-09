@@ -355,15 +355,19 @@ for ibatch = 1:Nbatch
         DATA(:,:,ibatch) = gather_try(datr);
     else
         datcpu  = gather_try(int16(datr));
-        fwrite(fidW, datcpu, 'int16');
-        fprintf('Wrote whitened data to temporary file...');
+        if ops.no_write == false
+            fwrite(fidW, datcpu, 'int16');
+            fprintf('Wrote whitened data to temporary file...');
+        end
     end
     
 end
 
 datcpu  = gather_try(int16(datr));
-fwrite(fidW, datcpu, 'int16');
-fprintf('Wrote whitened data to temporary file...');
+if ops.no_write == false
+    fwrite(fidW, datcpu, 'int16');
+    fprintf('Wrote whitened data to temporary file...');
+end
 
 if strcmp(ops.initialize, 'fromData')
    uproj(i0+1:end, :) = []; 

@@ -4,12 +4,12 @@ ops.verbose             = 1; % whether to print command line progress
 ops.showfigures         = 1; % whether to plot figures during optimization		
 
 %mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
-mystr = 'awake_planet_earth_offset_216000000_count_1800000';
-ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'		
-ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s.dat',mystr); % will be created for converted willow data 		
-ops.fproc               = '/home/jkinney/Desktop/60secs_automerge/temp_wh.dat'; % residual from RAM of preprocessed data		
-ops.root                = '/home/jkinney/Desktop/60secs_automerge/'; % 'openEphys' only: where raw files are		
-ops.original            = sprintf('%s.h5',mystr);
+% mystr = 'awake_planet_earth_offset_216000000_count_1800000';
+% ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'		
+% ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s.dat',mystr); % will be created for converted willow data 		
+% ops.fproc               = '/home/jkinney/Desktop/60secs_automerge/temp_wh.dat'; % residual from RAM of preprocessed data		
+% ops.root                = '/home/jkinney/Desktop/60secs_automerge/'; % 'openEphys' only: where raw files are		
+% ops.original            = sprintf('%s.h5',mystr);
 		
 %ops.fs                  = 25000;        % sampling rate		(omit if already in chanMap file)
 %ops.NchanTOT            = 32;           % total number of channels (omit if already in chanMap file)
@@ -25,7 +25,7 @@ ops.nSkipCov            = 1; % compute whitening matrix from every N-th batch (1
 ops.whiteningRange      = 32; % how many channels to whiten together (Inf for whole probe whitening, should be fine if Nchan<=32)		
 		
 % define the channel map as a filename (string) or simply an array		
-ops.chanMap             = '/home/jkinney/src/KiloSort/willow/channel_map/chanMap_shank0.mat'; % make this file using createChannelMapFile.m		
+% ops.chanMap             = '/home/jkinney/src/KiloSort/willow/channel_map/chanMap_shank0.mat'; % make this file using createChannelMapFile.m		
 %ops.chanMap             = '/home/jkinney/Desktop/kilosort_1K_neural_data/channel_map/chanMap_shankd0.mat'; % make this file using createChannelMapFile.m		
 ops.criterionNoiseChannels = 0.2; % fraction of "noise" templates allowed to span all channel groups (see createChannelMapFile for more info). 		
 % ops.chanMap = 1:ops.Nchan; % treated as linear probe if a chanMap file		
@@ -59,7 +59,7 @@ ops.splitT           = .1;           % lower threshold for splitting (.1)
 % options for initializing spikes from data		
 %ops.initialize      = 'no'; %'fromData' or 'no'		
 ops.initialize      = 'fromData'; %'fromData' or 'no'		
-ops.spkTh           = -4;      % spike threshold in standard deviations (4)		
+ops.spkTh           = -3;      % spike threshold in standard deviations (4)		
 ops.loc_range       = [3  1];  % ranges to detect peaks; plus/minus in time and channel ([3 1])		
 ops.long_range      = [30  12]; % ranges to detect isolated peaks ([30 6])		
 ops.maskMaxChannels = 5;       % how many channels to mask up/down ([5])		

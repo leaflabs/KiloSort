@@ -9,6 +9,15 @@ run(fullfile(pathToYourConfigFile, 'willow_config.m'))
 tic; % start timer
 %
 
+ops.keep_N = 1; 
+mystr = 'awake_planet_earth_offset_216000000_count_1800000';
+ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'                
+ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.dat',mystr,mystr); % will be created for converted willow data                 
+ops.original            = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.h5',mystr,mystr);
+
+ops.no_write = true;
+
+
 if ops.GPU     
     gpuDevice(1); % initialize GPU (will erase any existing GPU arrays)
 end
@@ -18,9 +27,13 @@ if strcmp(ops.datatype , 'h5')
 end
 
 for shank = 0:4
-    ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/chanMap_shank%d.mat',shank);	
-    ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d',shank); % 'openEphys' only: where raw files are		
-    ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data		
+%     ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/chanMap_shank%d.mat',shank);	
+%     ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d',shank); % 'openEphys' only: where raw files are		
+%     ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data
+    ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/every_%d_row/chanMap_shank%d.mat',ops.keep_N,shank);  
+    ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/every_%d_row/shank%d',mystr,ops.keep_N,shank); % 'openEphys' only: where raw files are    
+    ops.fproc   = sprintf('%s/temp_wh.dat',ops.root); % residual from RAM of preprocessed data         
+
     %
     [rez, DATA, uproj] = preprocessData(ops); % preprocess data and extract spikes for initialization
     rez                = fitTemplates(rez, DATA, uproj);  % fit templates iteratively

@@ -14,7 +14,7 @@ probe_map = dlmread(probe_map_file,'',num_comments,0);
 fs = 30000;
 
 % keep every Nth row
-N=3;
+N=1;
 
 % organize channels by shank
 for shank = 0:max(probe_map(:,SHANK_COL))

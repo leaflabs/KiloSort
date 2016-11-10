@@ -9,7 +9,8 @@ run(fullfile(pathToYourConfigFile, 'willow_config.m'))
 tic; % start timer
 %
 
-mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
+%mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
+mystr = 'awake_planet_earth_offset_216000000_count_1800000';
 ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'                
 ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.dat',mystr,mystr); % will be created for converted willow data                     
 ops.original            = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.h5',mystr,mystr);
@@ -31,7 +32,8 @@ for shank = 0:4
     %     ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data
     ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/every_%d_row/chanMap_shank%d.mat',ops.keep_N,shank);
     if ops.GPU==1
-        ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/GPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+        ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/temp/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+        %ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/GPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
     else
         ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/CPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
     end

@@ -1,3 +1,10 @@
+function [] = willow_master( mydir, mystr, num_samples )
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+
+% Example
+% mystr = 'awake_planet_earth_offset_216000000_count_1800000';
+
 % default options are in parenthesis after the comment
 
 addpath(genpath('/home/jkinney/src/KiloSort')) % path to kilosort folder
@@ -10,11 +17,14 @@ tic; % start timer
 %
 
 %mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
-mystr = 'awake_planet_earth_offset_216000000_count_1800000';
-ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'                
-ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.dat',mystr,mystr); % will be created for converted willow data                     
-ops.original            = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.h5',mystr,mystr);
+%mystr = 'awake_planet_earth_offset_216000000_count_1800000';
+ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'
+%ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.dat',mystr,mystr); % will be created for converted willow data                     
+%ops.original            = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.h5',mystr,mystr);
+ops.fbinary             = sprintf('%s/%s/%s.dat',mydir,mystr,mystr); % will be created for converted willow data                     
+ops.original            = sprintf('%s/%s/%s.h5',mydir,mystr,mystr);
 ops.keep_N = 1;
+ops.num_samples         = num_samples;
 
 ops.no_write = true;
 
@@ -32,10 +42,10 @@ for shank = 0:4
     %     ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data
     ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/every_%d_row/chanMap_shank%d.mat',ops.keep_N,shank);
     if ops.GPU==1
-        ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/temp/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+        ops.root    = sprintf('%s/%s/temp/shank%d',mydir,mystr,shank); % 'openEphys' only: where raw file    s are
         %ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/GPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
     else
-        ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/CPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
+        ops.root    = sprintf('%s/%s/CPU/shank%d',mydir,mystr,shank); % 'openEphys' only: where raw file    s are
     end
     ops.fproc   = sprintf('%s/temp_wh.dat',ops.root); % residual from RAM of preprocessed data
     %
@@ -59,3 +69,4 @@ end
 % remove temporary file
 %delete(ops.fproc);
 %%
+end

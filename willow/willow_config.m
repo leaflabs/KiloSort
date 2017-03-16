@@ -3,6 +3,9 @@ ops.parfor              = 0; % whether to use parfor to accelerate some parts of
 ops.verbose             = 1; % whether to print command line progress		
 ops.showfigures         = 1; % whether to plot figures during optimization		
 
+% number of samples to read from huge h5 file
+ops.num_samples         = 30000; 
+
 %mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
 % mystr = 'awake_planet_earth_offset_216000000_count_1800000';
 % ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'		

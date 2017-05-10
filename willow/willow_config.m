@@ -1,10 +1,10 @@
 ops.GPU                 = 1; % whether to run this code on an Nvidia GPU (much faster, mexGPUall first)		
 ops.parfor              = 0; % whether to use parfor to accelerate some parts of the algorithm		
 ops.verbose             = 1; % whether to print command line progress		
-ops.showfigures         = 1; % whether to plot figures during optimization		
+ops.showfigures         = 0; % whether to plot figures during optimization		
 
 % number of samples to read from huge h5 file
-ops.num_samples         = 30000; 
+ops.num_samples         = 1800000; 
 
 %mystr = 'awake_gratings_and_grass_offset_133200014_count_1800000';
 % mystr = 'awake_planet_earth_offset_216000000_count_1800000';

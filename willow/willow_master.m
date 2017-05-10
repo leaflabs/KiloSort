@@ -21,8 +21,9 @@ tic; % start timer
 ops.datatype            = 'h5';  % binary ('dat', 'bin') or 'openEphys' or 'h5'
 %ops.fbinary             = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.dat',mystr,mystr); % will be created for converted willow data                     
 %ops.original            = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/%s.h5',mystr,mystr);
-ops.fbinary             = sprintf('%s/%s/%s.dat',mydir,mystr,mystr); % will be created for converted willow data                     
-ops.original            = sprintf('%s/%s/%s.h5',mydir,mystr,mystr);
+ops.fbinary             = sprintf('%s/%s.dat',mydir,mystr); % will be created for converted willow data                     
+ops.original            = sprintf('%s/%s.h5',mydir,mystr);
+%ops.original            = sprintf('%s/%s/%s.h5',mydir,mystr,mystr);
 ops.keep_N = 1;
 ops.num_samples         = num_samples;
 
@@ -42,10 +43,14 @@ for shank = 0:4
     %     ops.fproc   = sprintf('/home/jkinney/Desktop/60secs_automerge/shank%d/temp_wh.dat',shank); % residual from RAM of preprocessed data
     ops.chanMap = sprintf('/home/jkinney/src/KiloSort/willow/channel_map/every_%d_row/chanMap_shank%d.mat',ops.keep_N,shank);
     if ops.GPU==1
-        ops.root    = sprintf('%s/%s/temp/shank%d',mydir,mystr,shank); % 'openEphys' only: where raw file    s are
+        ops.root    = sprintf('%s/%s/GPU/shank%d',mydir,mystr,shank); % 'openEphys' only: where raw file    s are
         %ops.root    = sprintf('/home/jkinney/Desktop/60secs_automerge/%s/GPU/shank%d',mystr,shank); % 'openEphys' only: where raw file    s are
     else
         ops.root    = sprintf('%s/%s/CPU/shank%d',mydir,mystr,shank); % 'openEphys' only: where raw file    s are
+    end
+    if ~exist(ops.root)
+        mkdir(ops.root);
+        disp(['Made directory' ops.root]);
     end
     ops.fproc   = sprintf('%s/temp_wh.dat',ops.root); % residual from RAM of preprocessed data
     %
